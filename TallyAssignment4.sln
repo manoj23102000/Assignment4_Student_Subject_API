@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TallyAssignment4", "TallyAssignment4\TallyAssignment4.csproj", "{51F13FC1-A51D-452B-96EB-5893A167A17C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51F13FC1-A51D-452B-96EB-5893A167A17C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51F13FC1-A51D-452B-96EB-5893A167A17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51F13FC1-A51D-452B-96EB-5893A167A17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51F13FC1-A51D-452B-96EB-5893A167A17C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14FEAF30-2D95-4727-8367-C6E8BD5A2D15}
+	EndGlobalSection
+EndGlobal
