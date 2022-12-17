@@ -16,7 +16,7 @@ namespace TallyAssignment4.Controllers
             _dbContext = dBContext;
         }
 
-        //Returning Studednt with related subjects
+        //Returning Student with related subjects
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
@@ -25,14 +25,14 @@ namespace TallyAssignment4.Controllers
                                         .ToListAsync();
         }
 
-        //Returning specific student with related subject bsed on id
+        //Returning specific student with related subject based on StudId
         [HttpGet("GetStudent/{studId}")]
         public async Task<ActionResult<Student>> GetStudent(int studId)
         {
             var student = await _dbContext.Students
-                                       .Include(stu => stu.Subjects)
-                                       .Where(stu => stu.StudId == studId)
-                                       .FirstOrDefaultAsync();
+                                               .Include(stu => stu.Subjects)
+                                               .Where(stu => stu.StudId == studId)
+                                               .FirstOrDefaultAsync();
             if(student == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace TallyAssignment4.Controllers
             return CreatedAtAction("GetStudents", new { id = student.StudId }, student);
         }
 
-
+        //Update student and subject both or only student
         [HttpPut("{studId}")]
         public async Task<ActionResult<Student>> UpdateStudent(int studId, Student student)
         {
@@ -73,17 +73,24 @@ namespace TallyAssignment4.Controllers
                 return BadRequest(ModelState);
             }
             _dbContext.Entry(student).State = EntityState.Modified;
-            //List<Subject> subjects = await _dbContext.Subjects.Where(sub => sub.StudentStudId == studId).ToListAsync();
             int subCount = student.Subjects.Count();
             if(subCount > 0)
             {
+                for(int i = 0; i < subCount; i++)
+                {
+                    if (_dbContext.Subjects.AsNoTracking().FirstOrDefault(sub => sub.SubId == student.Subjects[i].SubId && sub.StudentStudId == student.StudId) == null)
+                    {
+                        ModelState.AddModelError("", "The subId provided is not present for given studId");
+                        return BadRequest(ModelState);
+                    }
+                }
                 _dbContext.Subjects.UpdateRange(student.Subjects);
             }
-            //_dbContext.Entry(student.Subjects).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
             return Ok(student);
         }
 
+        //Delete Student with related subjects
         [HttpDelete("{studId}")]
         public async Task<IActionResult> DeleteStudent(int studId)
         {

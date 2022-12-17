@@ -15,6 +15,8 @@ namespace TallyAssignment4.Controllers
         {
             _dbContext = dBContext;
         }
+
+        //Getting all the subjects present in DB
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Subject>>> GetSubjects()
         {
@@ -22,6 +24,7 @@ namespace TallyAssignment4.Controllers
             return Ok(subjects);
         }
 
+        //Getting subject with given SubId
         [HttpGet("{subId}")]
         public async Task<ActionResult<Subject>> GetSubjeect(int subId)
         {
@@ -32,6 +35,8 @@ namespace TallyAssignment4.Controllers
             }
             return Ok(subject);
         }
+
+        //Adding new subject to any student with given StudId
         [HttpPost]
         public async Task<ActionResult<Subject>> AddSubject(Subject subject)
         {
@@ -48,6 +53,8 @@ namespace TallyAssignment4.Controllers
             await _dbContext.SaveChangesAsync();
             return CreatedAtAction("GetSubjects", new { id = subject.SubId }, subject);
         }
+
+        //Updating subject based on SubId
         [HttpPut("{subId}")]
         public async Task<ActionResult<Subject>> UpdateSubject(int subId, Subject subject)
         {
@@ -71,6 +78,7 @@ namespace TallyAssignment4.Controllers
         }
 
         //[HttpDelete("{subId}/{studId}")]
+        //Deleting subject with SubId
         [HttpDelete("{subId}")]
         public async Task<ActionResult<Student>> DeleteSubject(int subId)
         {
