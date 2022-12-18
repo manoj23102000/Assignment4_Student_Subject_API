@@ -44,14 +44,21 @@ namespace TallyAssignment4.Controllers
         [HttpPost]
         public async Task<ActionResult<Student>> AddStudent(Student student)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                await _dbContext.Students.AddAsync(student);
+                await _dbContext.Subjects.AddRangeAsync(student.Subjects);
+                await _dbContext.SaveChangesAsync();
+                return CreatedAtAction("GetStudents", new { id = student.StudId }, student);
             }
-            await _dbContext.Students.AddAsync(student);
-            await _dbContext.Subjects.AddRangeAsync(student.Subjects);
-            await _dbContext.SaveChangesAsync();
-            return CreatedAtAction("GetStudents", new { id = student.StudId }, student);
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         //Update student and subject both or only student
@@ -72,22 +79,29 @@ namespace TallyAssignment4.Controllers
                 ModelState.AddModelError("CustomError", "Student with given Id is not present");
                 return BadRequest(ModelState);
             }
-            _dbContext.Entry(student).State = EntityState.Modified;
-            int subCount = student.Subjects.Count();
-            if(subCount > 0)
+            try
             {
-                for(int i = 0; i < subCount; i++)
+                _dbContext.Entry(student).State = EntityState.Modified;
+                int subCount = student.Subjects.Count();
+                if (subCount > 0)
                 {
-                    if (_dbContext.Subjects.AsNoTracking().FirstOrDefault(sub => sub.SubId == student.Subjects[i].SubId && sub.StudentStudId == student.StudId) == null)
+                    for (int i = 0; i < subCount; i++)
                     {
-                        ModelState.AddModelError("", "The subId provided is not present for given studId");
-                        return BadRequest(ModelState);
+                        if (_dbContext.Subjects.AsNoTracking().FirstOrDefault(sub => sub.SubId == student.Subjects[i].SubId && sub.StudentStudId == student.StudId) == null)
+                        {
+                            ModelState.AddModelError("", "The subId provided is not present for given studId");
+                            return BadRequest(ModelState);
+                        }
                     }
+                    _dbContext.Subjects.UpdateRange(student.Subjects);
                 }
-                _dbContext.Subjects.UpdateRange(student.Subjects);
+                await _dbContext.SaveChangesAsync();
+                return Ok(student);
             }
-            await _dbContext.SaveChangesAsync();
-            return Ok(student);
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         //Delete Student with related subjects
